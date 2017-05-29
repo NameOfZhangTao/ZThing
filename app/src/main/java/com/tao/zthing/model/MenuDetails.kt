@@ -31,6 +31,11 @@ class MenuDetails {
              */
             var sumary: String? = null
             var title: String? = null
+
+            class RecipeMethod {
+                var img: String? = null
+                var step: String? = null
+            }
         }
     }
 }

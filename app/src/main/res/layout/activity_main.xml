@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llMain"
@@ -22,8 +21,7 @@
                 android:id="@+id/toolbarMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:title="@string/title_home">
-            </android.support.v7.widget.Toolbar>
+                app:title="@string/title_home" />
         </android.support.design.widget.AppBarLayout>
 
         <!--<android.support.v4.widget.NestedScrollView-->
@@ -35,7 +33,8 @@
             android:id="@+id/flContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:background="#eeeeee"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         <!--</android.support.v4.widget.NestedScrollView>-->
     </android.support.design.widget.CoordinatorLayout>
 
@@ -45,6 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation" />
 
 </LinearLayout>

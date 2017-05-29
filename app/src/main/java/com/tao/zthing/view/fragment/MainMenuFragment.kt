@@ -3,6 +3,7 @@ package com.tao.zthing.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.view.*
 import android.widget.EditText
 import com.blankj.utilcode.util.LogUtils
@@ -13,16 +14,15 @@ import com.tao.zthing.manager.MenuManager
 import com.tao.zthing.model.MenuDetails
 import com.tao.zthing.view.BaseFragment
 import com.tao.zthing.view.activity.MenuCategoryActivity
+import com.tao.zthing.view.activity.MenuDetailsActivity
 import com.tao.zthing.view.adapter.MenuListAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.cardView
-import org.jetbrains.anko.support.v4.alert
-import org.jetbrains.anko.support.v4.onRefresh
-import org.jetbrains.anko.support.v4.startActivityForResult
-import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.support.v4.*
 
 /**
  * author:zhangtao on 2017/5/23 16:04
@@ -34,7 +34,8 @@ class MainMenuFragment : BaseFragment() {
 
     internal var spUtils = SPUtils(MenuCategoryActivity.toString())
 
-    internal var ctgid: String? = null
+    internal var ctgId: String? = null
+    internal var ctgTitle: String? = null
     internal var name: String? = null
     internal var page = 1
 
@@ -43,7 +44,8 @@ class MainMenuFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        ctgid = spUtils.getString(MenuCategoryActivity.MENU_CATEGORY_RESULT_KEY)
+        ctgId = spUtils.getString(MenuCategoryActivity.MENU_CATEGORY_RESULT_KEY)
+        ctgTitle = spUtils.getString(MenuCategoryActivity.MENU_CATEGORY_RESULT_NAME_KEY)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?
@@ -61,6 +63,9 @@ class MainMenuFragment : BaseFragment() {
             setOnLoadMoreListener({ onLoad() }, recyclerViewMenu)
             isFirstOnly(false)
             openLoadAnimation(BaseQuickAdapter.SCALEIN)
+            setOnItemClickListener { adapter, view, position ->
+                MenuDetailsActivity.startActivity(activity, mList[position])
+            }
         }
         onLoading()
     }
@@ -76,8 +81,8 @@ class MainMenuFragment : BaseFragment() {
     }
 
     internal fun onLoad() {
-        LogUtils.e("$ctgid-size:${adapter.mList.size}")
-        MenuManager.menuService?.getMenuSearch(ctgid, name, page, size)?.let {
+        LogUtils.e("$ctgId-size:${adapter.mList.size}")
+        MenuManager.menuService?.getMenuSearch(ctgId, name, page, size)?.let {
             it.compose(bindToLifecycle())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -136,6 +141,7 @@ class MainMenuFragment : BaseFragment() {
                     yesButton {
                         initData()
                         name = editText?.text?.toString()
+                        activity.toolbarMain.menu.findItem(R.id.menu_search)?.title = if (TextUtils.isEmpty(name)) "搜索" else name
                         onLoad()
                     }
                     noButton {}
@@ -153,15 +159,22 @@ class MainMenuFragment : BaseFragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.menu_main, menu)
+        if (!TextUtils.isEmpty(name))
+            menu?.findItem(R.id.menu_search)?.title = name
+        if (!TextUtils.isEmpty(ctgTitle))
+            menu?.findItem(R.id.menu_category)?.title = ctgTitle
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MenuCategoryActivity.MENU_CATEGORY_SELECT && resultCode == MenuCategoryActivity.MENU_CATEGORY_SELECT) {
             initData()
-            ctgid = data?.getStringExtra(MenuCategoryActivity.MENU_CATEGORY_RESULT_KEY)
+            ctgId = data?.getStringExtra(MenuCategoryActivity.MENU_CATEGORY_RESULT_KEY)
+            ctgTitle = data?.getStringExtra(MenuCategoryActivity.MENU_CATEGORY_RESULT_NAME_KEY)
+            activity.toolbarMain.menu.findItem(R.id.menu_category)?.title = if (TextUtils.isEmpty(ctgTitle)) "分类" else ctgTitle
             onLoading()
-            spUtils.put(MenuCategoryActivity.MENU_CATEGORY_RESULT_KEY, ctgid)
+            spUtils.put(MenuCategoryActivity.MENU_CATEGORY_RESULT_KEY, ctgId)
+            spUtils.put(MenuCategoryActivity.MENU_CATEGORY_RESULT_NAME_KEY, ctgTitle)
         }
     }
 }

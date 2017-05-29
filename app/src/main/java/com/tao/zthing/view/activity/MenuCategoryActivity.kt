@@ -3,6 +3,8 @@ package com.tao.zthing.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.view.Menu
+import android.view.MenuItem
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.tao.zthing.R
 import com.tao.zthing.manager.MenuManager
@@ -20,6 +22,7 @@ class MenuCategoryActivity : BaseActivity() {
     companion object {
         const val MENU_CATEGORY_SELECT = 10
         const val MENU_CATEGORY_RESULT_KEY = "ctgId"
+        const val MENU_CATEGORY_RESULT_NAME_KEY = "ctgTitle"
     }
 
     private var adapter: MenuCategoryAdapter? = null
@@ -28,6 +31,8 @@ class MenuCategoryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_category)
+
+        setSupportActionBar(toolbar)
 
         toolbar.setNavigationOnClickListener { finish() }
 
@@ -51,6 +56,7 @@ class MenuCategoryActivity : BaseActivity() {
             if (adapter.getItemViewType(position) == MenuCategoryAdapter.MENU_CATEGORY_ITEM) {
                 val intent = Intent()
                 intent.putExtra(MENU_CATEGORY_RESULT_KEY, item.ctgId)
+                intent.putExtra(MENU_CATEGORY_RESULT_NAME_KEY, item.name)
                 setResult(MENU_CATEGORY_SELECT, intent)
                 finish()
             } else {
@@ -65,6 +71,22 @@ class MenuCategoryActivity : BaseActivity() {
         recyclerView.addItemDecoration(DividerGridItemDecoration(this))
 
         swipeRefreshLayout.onRefresh { refreshData() }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_menu_category, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_all_category -> {
+                setResult(MENU_CATEGORY_SELECT)
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 

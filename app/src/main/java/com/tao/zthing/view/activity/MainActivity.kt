@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_home -> {
                     toolbarMain.title = getString(R.string.title_home)
-//                    invalidateOptionsMenu()
                     homeFragment = homeFragment ?: FragmentUtils.findFragment(supportFragmentManager, MainHomeFragment::class.java) as MainHomeFragment?
                     homeFragment = homeFragment ?: addFragment(supportFragmentManager, MainHomeFragment(), R.id.flContent) as MainHomeFragment?
                     homeFragment?.let { FragmentUtils.hideShowFragment(getTopShowFragment(supportFragmentManager), it) }
@@ -38,7 +37,6 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_menu -> {
                     toolbarMain.title = getString(R.string.title_menu)
-//                    invalidateOptionsMenu()
                     menuFragment = menuFragment ?: FragmentUtils.findFragment(supportFragmentManager, MainMenuFragment::class.java) as MainMenuFragment?
                     menuFragment = menuFragment ?: addFragment(supportFragmentManager, MainMenuFragment(), R.id.flContent) as MainMenuFragment?
                     menuFragment?.let { FragmentUtils.hideShowFragment(getTopShowFragment(supportFragmentManager), it) }
@@ -46,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_mine -> {
                     toolbarMain.title = getString(R.string.title_mine)
-//                    invalidateOptionsMenu()
                     mineFragment = mineFragment ?: FragmentUtils.findFragment(supportFragmentManager, MainMineFragment::class.java) as MainMineFragment?
                     mineFragment = mineFragment ?: addFragment(supportFragmentManager, MainMineFragment(), R.id.flContent) as MainMineFragment?
                     mineFragment?.let { FragmentUtils.hideShowFragment(getTopShowFragment(supportFragmentManager), it) }
@@ -67,25 +64,4 @@ class MainActivity : AppCompatActivity() {
             currentTimeMillis = System.currentTimeMillis()
         }
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.menu_main, menu)
-//        return true
-//    }
-//
-//    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-//        menu?.let {
-//            when (navigation.selectedItemId) {
-//                R.id.navigation_menu -> {
-//                    it.findItem(R.id.menu_search).isVisible = true
-//                    it.findItem(R.id.menu_category).isVisible = true
-//                }
-//                else -> {
-//                    it.findItem(R.id.menu_search).isVisible = false
-//                    it.findItem(R.id.menu_category).isVisible = false
-//                }
-//            }
-//        }
-//        return super.onPrepareOptionsMenu(menu)
-//    }
 }

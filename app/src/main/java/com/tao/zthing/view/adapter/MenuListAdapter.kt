@@ -16,12 +16,17 @@ import com.tao.zthing.model.MenuDetails
 class MenuListAdapter(internal var mList: ArrayList<MenuDetails.Details>) : BaseQuickAdapter<MenuDetails.Details, BaseViewHolder>(R.layout.item_menu_list, mList) {
 
     override fun convert(helper: BaseViewHolder?, item: MenuDetails.Details?) {
-        helper?.setText(R.id.textName, item?.name)
-        Glide.with(helper?.itemView?.context)
-                .load(item?.thumbnail)
-                .thumbnail(0.3f)
-                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-                .into(helper?.getView<ImageView>(R.id.ivThumbnail))
+        helper?.let {
+            with(it) {
+                setText(R.id.textName, item?.name)
+                setText(R.id.textTitles, item?.ctgTitles)
+                Glide.with(itemView?.context)
+                        .load(item?.thumbnail)
+                        .thumbnail(0.3f)
+                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
+                        .into(getView<ImageView>(R.id.ivThumbnail))
+            }
+        }
     }
 
     class MenuDiffCallback(internal val oldList: List<MenuDetails.Details>?, internal val newList: List<MenuDetails.Details>?) : DiffUtil.Callback() {
